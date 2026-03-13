@@ -29,9 +29,12 @@ namespace std
 {
   template<> struct hash<ecs::Entity> 
   {
-    size_t operator()(ecs::Entity e) const noexcept 
-    {
-        return (size_t(e.index) << 32) | e.generation;
-    }
+      size_t operator()(ecs::Entity e) const noexcept 
+      {
+          // Combine into a 64‑bit value first, then hash that if needed.
+          uint64_t combined = (uint64_t(e.index) << 32) | e.generation;
+          
+          return std::hash<uint64_t>{}(combined);
+      }
   };
 }
