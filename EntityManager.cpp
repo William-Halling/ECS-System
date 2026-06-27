@@ -2,7 +2,7 @@
 
 namespace ecs 
 {
-  EntityManager EntityManager::createEntity()
+  Entity EntityManager::createEntity()
   {
     uint32_t target_index;
     uint32_t current_generation = 0;
@@ -40,14 +40,14 @@ namespace ecs
   }
   
   // High-performance validation check: O(1) time complexity
-  [[nodiscard]] bool EntityManager::isAlive(Entity entity) const noexcept 
+  bool EntityManager::isAlive(Entity entity) const noexcept 
   {
       const uint32_t idx = entity.index();
     
       return idx < generations.size() && generations[idx] == entity.generation();
   }
 
-  [[nodiscard]] size_t EntityManager::capacity() const noexcept
+  size_t EntityManager::capacity() const noexcept
   { 
     return generations.size(); 
   }
