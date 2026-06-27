@@ -1,40 +1,50 @@
-// entity.h
 #pragma once
 #include <cstdint>
 #include <functional>
 
 namespace ecs 
 {
-  
   struct Entity 
   {
-      uint32_t index;
-      uint32_t generation;
-  
-      bool operator==(Entity other) const noexcept 
-      {
-          return index == other.index && generation == other.generation;
-      }
+    uint64_t id = 0;
 
-      bool operator!=(Entity other) const noexcept { return !(*this == other); }
+    constexpr Entity() noexcept = default;
+    constexpr explicit Entity(uint64_t val) noexcept : id(val) {}
+    
+    constexpr Entity(uint32_t index, uint32_t generation) noexcept 
+      : id((static_cast<uint64_t>(generation) << 32) | index) {}
+  
+    
+    [[nodiscard]] constexpr uint32_t index() const noexcept 
+    { 
+      return static_cast<uint32_t>(id); 
+    }
+
+    [[nodiscard]] constexpr uint32_t generation() const noexcept 
+    { 
+      return static_cast<uint32_t>(id >> 32); 
+    }
+
+      
+    constexpr bool operator==(Entity other) const noexcept 
+    {
+        return id == other.id;
+    }
+
+    constexpr bool operator!=(Entity other) const noexcept { return id != other.id; }
   };
 
-  constexpr Entity ENTITY_NULL = { ~0u, 0u };
+  inline constexpr Entity ENTITY_NULL = { ~0u, 0u };
+}
 
-} // namespace ecs
 
-
-// Specialize std::hash for use in unordered containers
 namespace std 
 {
   template<> struct hash<ecs::Entity> 
   {
       size_t operator()(ecs::Entity e) const noexcept 
       {
-          // Combine into a 64‑bit value first, then hash that if needed.
-          uint64_t combined = (uint64_t(e.index) << 32) | e.generation;
-          
-          return std::hash<uint64_t>{}(combined);
+          return std::hash<uint64_t>{}(e.id);
       }
   };
 }
