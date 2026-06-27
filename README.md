@@ -33,8 +33,8 @@ The goal is to provide a minimal but expandable foundation for learning engine a
 - ├── include/
 - │   └── ecs/
 - │       ├── ecs.h                  # Main umbrella header
-- │       ├── entity.h
-- │       ├── component.h
+- │       ├── entity.h - done
+- │       ├── component.h - done
 - │       ├── chunk.h
 - │       ├── archetype.h
 - │       ├── world.h
